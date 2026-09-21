@@ -4,30 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ramo de Fourier</title>
+    
+    <!-- Librería para renderizar LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 10px 0;
             background-color: #000000; 
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start; 
             min-height: 100vh;
             text-align: center;
             overflow-x: hidden;
         }
 
         h3 {
-            margin-top: 30px;
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-top: 10px; 
+            margin-bottom: 5px;
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
             color: #FFD700; 
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
             font-weight: 300;
             letter-spacing: 2px;
         }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 5px; 
+            font-size: 1rem;
+            max-width: 600px;
+            padding: 0 20px;
+            color: #fff;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .ecuacion {
+            color: #ffffff;
+            font-size: 0.95rem; 
+            margin: 5px 0 10px 0; 
+                }
 
         .canvas-container {
             flex: 1;
@@ -35,7 +58,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 10px;
+            padding: 5px; /* Margen reducido */
             box-sizing: border-box;
         }
 
@@ -46,16 +69,6 @@
             border-radius: 15px;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
         }
-
-        p {
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-            max-width: 600px;
-            padding: 0 20px;
-            color: #fff;
-            font-weight: 300;
-            line-height: 1.6;
-        }
     </style>
 </head>
 <body>
@@ -65,6 +78,11 @@
         Mi odio y brutal asco por la capitalización de los actos de amor es directamente proporcional a lo mucho que me fascinas.<br>
         - F. P.
     </p>
+
+    <!-- Ecuación rigurosa de los epiciclos paramétricos en el plano complejo -->
+    <div class="ecuacion">
+        $$ z(t) = \sum_{k=0}^{N-1} A_k e^{i(\omega_k t + \phi_k)} $$
+    </div>
 
     <div class="canvas-container">
         <canvas id="canvas" width="800" height="600"></canvas>
@@ -239,7 +257,7 @@
 
                 if (time > Math.PI * 2) {
                     time = 0;
-                    finishedPaths.push([...drawnPath]); // Guardar dibujo en el fondo
+                    finishedPaths.push([...drawnPath]);
                     drawnPath = [];
                     currentPart++;
                 }
