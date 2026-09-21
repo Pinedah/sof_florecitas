@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramo de Fourier</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000; 
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        h3 {
+            margin-top: 30px;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #FFD700; 
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 800px;
+            background-color: #050505;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+
+        p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            max-width: 600px;
+            padding: 0 20px;
+            color: #cccccc;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <h3 id="titulo">♡ Ramo de Fourier para sof ♡</h3>
+    <p id="texto-inferior">
+        Mi odio y brutal asco por la capitalización de los actos de amor es directamente proporcional a lo mucho que me fascinas.<br>
+        - F. P.
+    </p>
+
+    <div class="canvas-container">
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width;
+        let height = canvas.height;
+
+        let path = [];
+        let fourierX = [];
+        let time = 0;
+        let drawnPath = [];
+
+        function generateBouquet() {
+            path = [];
+            
+            const addPoint = (x, y) => path.push({x, y});
+
+            for (let i = 300; i >= 80; i -= 3) {
+                addPoint(Math.sin(i * 0.02) * 20 - 10, i);
+            }
+
+            const addSpiral = (cx, cy, maxR, coils, pts, dir) => {
+                for (let i = 0; i < pts; i++) {
+                    let t = (i / pts) * Math.PI * 2 * coils;
+                    let r = (maxR / (Math.PI * 2 * coils)) * t;
+                    addPoint(cx + r * Math.cos(t * dir), cy + r * Math.sin(t * dir));
+                }
+            };
+            addSpiral(-60, 120, 50, 3.5, 100, -1);
+
+            const addFlower = (cx, cy, baseR, varR, petals, pointsCount) => {
+                for(let i = 0; i < pointsCount; i++) {
+                    let t = (i / pointsCount) * Math.PI * 2;
+                    let r = baseR + varR * Math.abs(Math.sin(petals * t));
+                    addPoint(cx + r * Math.cos(t), cy + r * Math.sin(t));
+                }
+            };
+
+            addFlower(-160, 40, 40, 35, 4, 120);    // Flor Inferior Izquierda
+            addFlower(-130, -110, 45, 35, 5, 120);  // Flor Superior Izquierda
+            
+            addFlower(0, -90, 75, 55, 6, 200);      // Flor Central
+            
+            addFlower(130, -110, 45, 35, 5, 120);   // Flor Superior Derecha
+            addFlower(160, 40, 40, 35, 4, 120);     // Flor Inferior Derecha
+
+            for (let i = 100; i >= 0; i--) {
+                let t = (i / 100) * Math.PI * 2 * 3.5;
+                let r = (50 / (Math.PI * 2 * 3.5)) * t;
+                addPoint(60 + r * Math.cos(t), 120 + r * Math.sin(t));
+            }
+
+            for (let i = 80; i <= 300; i += 3) {
+                addPoint(Math.sin(i * 0.02) * 20 + 5, i);
+            }
+        }
+
+        function dft(vals) {
+            let X = [];
+            let N = vals.length;
+            for (let k = 0; k < N; k++) {
+                let re = 0;
+                let im = 0;
+                for (let n = 0; n < N; n++) {
+                    let phi = (Math.PI * 2 * k * n) / N;
+                    re += vals[n].x * Math.cos(phi) + vals[n].y * Math.sin(phi);
+                    im += vals[n].y * Math.cos(phi) - vals[n].x * Math.sin(phi);
+                }
+                re /= N;
+                im /= N;
+
+                let freq = k;
+                if (k > N / 2) {
+                    freq = k - N;
+                }
+
+                let amp = Math.sqrt(re * re + im * im);
+                let phase = Math.atan2(im, re);
+                X.push({ re, im, freq, amp, phase });
+            }
+            return X;
+        }
+
+        function init() {
+            generateBouquet();
+            fourierX = dft(path);
+            
+            fourierX.sort((a, b) => b.amp - a.amp);
+            
+            draw();
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, width, height);
+
+            let x = width / 2;
+            let y = height / 2 - 30; 
+            for (let i = 0; i < fourierX.length; i++) {
+                let prevX = x;
+                let prevY = y;
+
+                let freq = fourierX[i].freq;
+                let radius = fourierX[i].amp;
+                let phase = fourierX[i].phase;
+
+                x += radius * Math.cos(freq * time + phase);
+                y += radius * Math.sin(freq * time + phase);
+
+                ctx.beginPath();
+                ctx.arc(prevX, prevY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(prevX, prevY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.stroke();
+            }
+
+            drawnPath.push({x, y});
+
+            ctx.beginPath();
+            for (let i = 0; i < drawnPath.length; i++) {
+                if (i === 0) ctx.moveTo(drawnPath[i].x, drawnPath[i].y);
+                else ctx.lineTo(drawnPath[i].x, drawnPath[i].y);
+            }
+            
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2.5;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 15; 
+            ctx.shadowColor = '#FFB300'; 
+            ctx.stroke();
+            
+            ctx.shadowBlur = 0; 
+
+            const dt = (Math.PI * 2) / fourierX.length;
+            time += dt;
+
+            if (time > Math.PI * 2) {
+                time = 0;
+                drawnPath = [];
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        // Ejecutar aplicación
+        init();
+    </script>
+</body>
+</html>
