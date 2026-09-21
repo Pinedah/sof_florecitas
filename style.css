@@ -1,0 +1,59 @@
+body {
+    margin: 5px;
+    padding: 10px 0;
+    background-color: #000000; 
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    min-height: 100vh;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+h3 {
+    margin-top: 10px; 
+    margin-bottom: 5px;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    color: #FFD700; 
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 5px; 
+    font-size: 1rem;
+    max-width: 600px;
+    padding: 0 20px;
+    color: #fff;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.ecuacion {
+    color: #ffffff;
+    font-size: 0.95rem; 
+    margin: 5px 0 10px 0; 
+}
+
+.canvas-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px; 
+    box-sizing: border-box;
+}
+
+canvas {
+    width: 100%;
+    max-width: 800px;
+    background-color: #050505;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+}
