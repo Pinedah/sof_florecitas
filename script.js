@@ -137,14 +137,14 @@ function draw() {
             ctx.shadowBlur = 0;
             ctx.beginPath();
             ctx.arc(prevX, prevY, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(255, 220, 100, 0.25)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
             ctx.lineWidth = 1;
             ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(prevX, prevY);
             ctx.lineTo(x, y);
-            ctx.strokeStyle = 'rgba(255, 220, 100, 0.45)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
             ctx.stroke();
         }
 
