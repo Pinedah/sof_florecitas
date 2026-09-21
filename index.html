@@ -10,8 +10,9 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
+
         body {
-            margin: 0;
+            margin: 5px;
             padding: 10px 0;
             background-color: #000000; 
             color: #ffffff;
@@ -58,7 +59,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 5px; /* Margen reducido */
+            padding: 5px; 
             box-sizing: border-box;
         }
 
@@ -79,13 +80,13 @@
         - F. P.
     </p>
 
-    <!-- Ecuación rigurosa de los epiciclos paramétricos en el plano complejo -->
+    <!-- Ecuación de los epiciclos paramétricos en el plano complejo -->
     <div class="ecuacion">
         $$ z(t) = \sum_{k=0}^{N-1} A_k e^{i(\omega_k t + \phi_k)} $$
     </div>
 
     <div class="canvas-container">
-        <canvas id="canvas" width="800" height="600"></canvas>
+        <canvas id="canvas" width="700" height="800"></canvas>
     </div>
 
     <script>
